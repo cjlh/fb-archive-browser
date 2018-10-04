@@ -9,6 +9,12 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem, QFont
 from ui_mainwindow import Ui_MainWindow
 
 
+class ConversationPreview(object):
+    def __init__(self, title, preview_message):
+        self.title = title
+        self.preview_message = preview_message
+
+
 class Conversation(object):
     def __init__(self, participants, path, media_path, title,
                  is_still_participant, thread_type):
@@ -96,26 +102,20 @@ def get_conversations_list(fb_dir):
         with open(path + "/message.json") as f:
             messages_data = json.load(f)
 
-        participants = []
-        for participant in messages_data["participants"]:
-            participants.append(participant["name"])
-
-        media_path = messages_dir + "/" + messages_data["thread_path"]
-
         # No title if conversation is with a deleted user
         title = messages_data.get("title", "Facebook User")
 
-        conversations.append(
-            Conversation(participants, path, media_path, title,
-                         messages_data["is_still_participant"],
-                         messages_data["thread_type"]))
+        preview_message_dict = messages_data["messages"][0]
+        preview_message = preview_message_dict.get("content", "(No messages)")
+
+        conversations.append(ConversationPreview(title, preview_message))
     return conversations
 
 
 def populate_conversations_list(ui, conversations):
     for conversation in conversations:
         widget = ConversationsListQWidget(conversation.title,
-                                          conversation.media_path)
+                                          conversation.preview_message)
 
         item = QListWidgetItem(ui.conversationsList)
         item.setSizeHint(widget.sizeHint())
