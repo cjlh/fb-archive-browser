@@ -3,9 +3,14 @@ import json
 
 
 class Conversation(object):
-    def __init__(self, name, dirname):
-        self.name = name
-        self.dirname = dirname
+    def __init__(self, participants, path, media_path, title,
+                 is_still_participant, thread_type):
+        self.participants = participants
+        self.path = path
+        self.media_path = media_path
+        self.title = title
+        self.is_still_participant = is_still_participant
+        self.thread_type = thread_type
 
 
 def get_fb_dir():
@@ -29,11 +34,23 @@ def get_conversations_list(fb_dir):
         # all-lowercase.
         if (dirname.lower() != dirname or dirname in special_dirs):
             continue
-        full_dirname = messages_dir + "/" + dirname
-        with open(full_dirname + "/message.json") as f:
+
+        path = messages_dir + "/" + dirname
+        with open(path + "/message.json") as f:
             messages_data = json.load(f)
-        name = messages_data["participants"][0]["name"]
-        conversations.append(Conversation(name, full_dirname))
+
+        participants = []
+        for participant in messages_data["participants"]:
+            participants.append(participant["name"])
+
+        media_path = messages_dir + "/" + messages_data["thread_path"]
+
+        title = messages_data.get("title", "Facebook User")
+
+        conversations.append(
+            Conversation(participants, path, media_path, title,
+                         messages_data["is_still_participant"],
+                         messages_data["thread_type"]))
     return conversations
 
 
@@ -41,10 +58,11 @@ if (__name__ == "__main__"):
     fb_dir = get_fb_dir()
     if (fb_dir is None):
         print("Facebook archive directory not found.")
+        exit()
 
     print("Facebook directory:", fb_dir)
 
     print("Conversations:")
     conversations = get_conversations_list(fb_dir)
     for conversation in conversations:
-        print("-", conversation.name)
+        print("-", conversation.title)
