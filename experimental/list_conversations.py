@@ -29,8 +29,8 @@ def get_conversations_list(fb_dir):
     for dirname in next(os.walk(messages_dir))[1]:
         # For each conversation, there is an all-lowercase directory containing
         # the messages.json file. When a conversation contains media there is
-        # a separate directory with the same name, except that the person's
-        # name has PascalCase. So we check that the current directory is
+        # a separate directory with the same name, except that the directory's
+        # name is in PascalCase. So we check that the current directory is
         # all-lowercase.
         if (dirname.lower() != dirname or dirname in special_dirs):
             continue
@@ -45,6 +45,7 @@ def get_conversations_list(fb_dir):
 
         media_path = messages_dir + "/" + messages_data["thread_path"]
 
+        # No title if conversation is with a deleted user
         title = messages_data.get("title", "Facebook User")
 
         conversations.append(

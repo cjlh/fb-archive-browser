@@ -6,34 +6,80 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>309</width>
-    <height>351</height>
+    <width>876</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>fb-archive-browser</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListView" name="conversationsList">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>259</width>
-      <height>269</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+      <item row="1" column="1">
+       <widget class="QListView" name="messagesList">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Conversations</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QListWidget" name="conversationsList">
+        <property name="minimumSize">
+         <size>
+          <width>175</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>225</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>309</width>
+     <width>876</width>
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuPlaceholder">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <addaction name="menuPlaceholder"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
