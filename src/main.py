@@ -77,7 +77,7 @@ class ConversationsListQWidget(QWidget):
 
 
 def get_fb_dir():
-    data_dir = "../../data"
+    data_dir = "../data"
     fb_dir = None
     for dirname in next(os.walk(data_dir))[1]:
         if (dirname[0:9] == "facebook-"):
