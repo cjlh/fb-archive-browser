@@ -1,6 +1,6 @@
 # fb-archive-browser
 
-A Node.js app for browsing your Facebook archive.
+A utility for browsing your Facebook archive.
 
 
 ## Features in development
@@ -10,7 +10,12 @@ A Node.js app for browsing your Facebook archive.
 - [ ] Advanced message search
 
 
-## Instructions
+## Dependencies
+
+- PyQt5
+
+
+## Usage
 
 1.  Download your information from Facebook
     1.  Visit https://www.facebook.com/settings?tab=your_facebook_information
