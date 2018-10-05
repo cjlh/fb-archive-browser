@@ -48,6 +48,9 @@ class Ui_MainWindow(object):
         self.actionSearch.setObjectName("actionSearch")
         self.actionAbout = QtWidgets.QAction(MainWindow)
         self.actionAbout.setObjectName("actionAbout")
+        self.actionExit = QtWidgets.QAction(MainWindow)
+        self.actionExit.setObjectName("actionExit")
+        self.menuPlaceholder.addAction(self.actionExit)
         self.menuHelp.addAction(self.actionAbout)
         self.menubar.addAction(self.menuPlaceholder.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -60,9 +63,10 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "fb-archive-browser"))
         self.menuPlaceholder.setTitle(_translate("MainWindow", "&File"))
-        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
+        self.menuHelp.setTitle(_translate("MainWindow", "&Help"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.actionSearch.setText(_translate("MainWindow", "Search"))
         self.actionSearch.setShortcut(_translate("MainWindow", "Ctrl+S"))
-        self.actionAbout.setText(_translate("MainWindow", "About"))
+        self.actionAbout.setText(_translate("MainWindow", "&About"))
+        self.actionExit.setText(_translate("MainWindow", "&Exit"))
 

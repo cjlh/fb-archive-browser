@@ -43,7 +43,10 @@ class ConversationsQMainWindow(QMainWindow):
         ui = ui_mainwindow.Ui_MainWindow()
         ui.setupUi(self)
 
-        ui.actionAbout.triggered.connect(self.onclick_actionAbout)
+        # File menu
+        ui.actionExit.triggered.connect(self.triggered_actionExit)
+        # Help menu
+        ui.actionAbout.triggered.connect(self.triggered_actionAbout)
 
         conversationsStyleSheet = """
             QListWidget {
@@ -66,9 +69,13 @@ class ConversationsQMainWindow(QMainWindow):
         populate_conversations_list(ui, conversations)
 
     @pyqtSlot()
-    def onclick_actionAbout(self):
+    def triggered_actionAbout(self):
         dialog = AboutQDialog()
         dialog.exec_()
+
+    @pyqtSlot()
+    def triggered_actionExit(self):
+        self.close()
 
 
 class ConversationsListQWidget(QWidget):
