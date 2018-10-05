@@ -6,8 +6,10 @@ from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QWidget, \
     QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QListWidgetItem, \
     QStyleFactory
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QFont, QIcon
+from PyQt5.QtCore import pyqtSlot
 
-from ui_mainwindow import Ui_MainWindow
+import ui_mainwindow
+import ui_aboutdialog
 
 
 class ConversationPreview(object):
@@ -27,12 +29,21 @@ class Conversation(object):
         self.thread_type = thread_type
 
 
+class AboutQDialog(QDialog):
+    def __init__(self):
+        super(AboutQDialog, self).__init__()
+        ui = ui_aboutdialog.Ui_Dialog()
+        ui.setupUi(self)
+
+
 class ConversationsQMainWindow(QMainWindow):
     def __init__(self, conversations):
         super(ConversationsQMainWindow, self).__init__()
 
-        ui = Ui_MainWindow()
+        ui = ui_mainwindow.Ui_MainWindow()
         ui.setupUi(self)
+
+        ui.actionAbout.triggered.connect(self.onclick_actionAbout)
 
         conversationsStyleSheet = """
             QListWidget {
@@ -53,6 +64,11 @@ class ConversationsQMainWindow(QMainWindow):
             "system-search", QIcon(default_search_icon_path)))
 
         populate_conversations_list(ui, conversations)
+
+    @pyqtSlot()
+    def onclick_actionAbout(self):
+        dialog = AboutQDialog()
+        dialog.exec_()
 
 
 class ConversationsListQWidget(QWidget):

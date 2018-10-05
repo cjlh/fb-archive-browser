@@ -35,6 +35,8 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         self.menuPlaceholder = QtWidgets.QMenu(self.menubar)
         self.menuPlaceholder.setObjectName("menuPlaceholder")
+        self.menuHelp = QtWidgets.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -44,7 +46,11 @@ class Ui_MainWindow(object):
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.actionSearch = QtWidgets.QAction(MainWindow)
         self.actionSearch.setObjectName("actionSearch")
+        self.actionAbout = QtWidgets.QAction(MainWindow)
+        self.actionAbout.setObjectName("actionAbout")
+        self.menuHelp.addAction(self.actionAbout)
         self.menubar.addAction(self.menuPlaceholder.menuAction())
+        self.menubar.addAction(self.menuHelp.menuAction())
         self.toolBar.addAction(self.actionSearch)
 
         self.retranslateUi(MainWindow)
@@ -54,7 +60,9 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "fb-archive-browser"))
         self.menuPlaceholder.setTitle(_translate("MainWindow", "&File"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.actionSearch.setText(_translate("MainWindow", "Search"))
         self.actionSearch.setShortcut(_translate("MainWindow", "Ctrl+S"))
+        self.actionAbout.setText(_translate("MainWindow", "About"))
 
