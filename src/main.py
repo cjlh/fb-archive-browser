@@ -84,18 +84,13 @@ class ConversationsListQWidget(QWidget):
 
         self.row = QVBoxLayout()
 
-        title_length = 24
-        if (len(title) > title_length):
-            title = title[0:title_length - 3] + "..."
+        title = truncate(title, 24)
+        recent_message = truncate(recent_message, 28)
 
         title_font = QFont("Sans Serif", 10)
         title_label = QLabel(title)
         title_label.setFont(title_font)
         self.row.addWidget(title_label)
-
-        preview_length = 28
-        if (len(recent_message) > preview_length):
-            recent_message = recent_message[0:preview_length - 3] + "..."
 
         preview_font = QFont("Sans Serif", 9)
         preview_label = QLabel(recent_message)
@@ -104,6 +99,15 @@ class ConversationsListQWidget(QWidget):
         self.row.addWidget(preview_label)
 
         self.setLayout(self.row)
+
+
+def truncate(s, length):
+    if (length < 3):
+        raise ValueError("Maximum string length must be at least 3")
+    if (len(s) > length):
+            return s[0:length - 3] + "..."
+    else:
+        return s
 
 
 def get_fb_dir():
