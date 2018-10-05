@@ -3,8 +3,9 @@ import sys
 import json
 
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QWidget, \
-    QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QListWidgetItem
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QFont
+    QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QListWidgetItem, \
+    QStyleFactory
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QFont, QIcon
 
 from ui_mainwindow import Ui_MainWindow
 
@@ -29,6 +30,7 @@ class Conversation(object):
 class ConversationsQMainWindow(QMainWindow):
     def __init__(self, conversations):
         super(ConversationsQMainWindow, self).__init__()
+
         ui = Ui_MainWindow()
         ui.setupUi(self)
 
@@ -44,6 +46,11 @@ class ConversationsQMainWindow(QMainWindow):
             }
         """
         ui.conversationsList.setStyleSheet(conversationsStyleSheet)
+
+        default_search_icon_path = \
+            "./icons/search.svg"
+        ui.actionSearch.setIcon(QIcon.fromTheme(
+            "system-search", QIcon(default_search_icon_path)))
 
         populate_conversations_list(ui, conversations)
 
