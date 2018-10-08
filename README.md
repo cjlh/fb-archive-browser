@@ -5,7 +5,7 @@ A utility for browsing your Facebook archive.
 
 ## Features in development
 
-- [ ] Browse conversations list
+- [x] Browse conversations list
 - [ ] Load conversations
 - [ ] Advanced message search
 
@@ -25,4 +25,19 @@ A utility for browsing your Facebook archive.
 
 2.  Unzip the archive downloaded from Facebook and place the unzipped folder into the `data` directory
 
-3. ...
+3.  Run the program by launching `main.py` with Python from the terminal:
+	-   `cd path/to/this/directory`
+	-	`cd src`
+	-   `python main.py`
+
+
+### How can I trust this software with my Facebook data?
+
+This program is written in Python and is published as open-source, meaning that there is no pre-compiled or obfuscated code running when you launch it.
+
+All of the code that makes up this program is freely available in the `src` folder of this repository. You may verify that there is no networking code, meaning that your Facebook data will not be sent to other computers or the internet.
+
+
+### License
+
+This software is published under the MIT license. See the [LICENSE](LICENSE.md) file for more information.
