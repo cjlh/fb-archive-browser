@@ -37,4 +37,4 @@ All of the code that makes up this program is freely available in the `src` fold
 
 ### License
 
-This software is published under the MIT license. See the [LICENSE](LICENSE.md) file for more information.
+This software is published under the GPLv3 license. See the [LICENSE](LICENSE.md) file for more information.
