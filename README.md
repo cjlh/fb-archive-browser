@@ -25,10 +25,7 @@ A utility for browsing your Facebook archive.
 
 2.  Unzip the archive downloaded from Facebook and place the unzipped folder into the `data` directory
 
-3.  Run the program by launching `main.py` with Python from the terminal:
-	1.  `cd path/to/this/directory`
-	2.	`cd src`
-	3.  `python main.py`
+3.  Run the program by launching `main.py` with Python 3
 
 
 ### How can I trust this software with my Facebook data?
