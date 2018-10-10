@@ -1,4 +1,4 @@
-# fb-archive-browser
+# FB Arhive Browser
 
 A utility for browsing your Facebook archive.
 
