@@ -68,5 +68,5 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.nameLabel.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-weight:600;\">FB Archive Browser</span></p></body></html>"))
         self.versionLabel.setText(_translate("Dialog", "Pre-release"))
-        self.aboutLabel.setText(_translate("Dialog", "<html><head/><body><p>Developed by Caleb Hamilton<br/>Released under the (...) license<br/><a href=\"https://github.com/cjlh/fb-archive-browser\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/cjlh/fb-archive-browser</span></a></p></body></html>"))
+        self.aboutLabel.setText(_translate("Dialog", "<html><head/><body><p>Developed by Caleb Hamilton<br/>Released under the GPLv3 license<br/><a href=\"https://github.com/cjlh/fb-archive-browser\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/cjlh/fb-archive-browser</span></a></p></body></html>"))
 

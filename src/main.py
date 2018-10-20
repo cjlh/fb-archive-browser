@@ -4,10 +4,11 @@
 import os
 import sys
 import json
+from datetime import datetime
 
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QWidget, \
     QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QListWidgetItem, \
-    QStyleFactory
+    QStyleFactory, QSizePolicy
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QFont, QIcon
 from PyQt5.QtCore import pyqtSlot
 
@@ -18,7 +19,9 @@ import ui_aboutdialog
 class ConversationPreview(object):
     def __init__(self, title, preview_message, timestamp_ms):
         self.title = title
-        self.preview_message = preview_message
+        # Fix FB message encoding
+        self.preview_message = \
+            preview_message.encode('latin1').decode('utf-8').strip()
         self.timestamp_ms = timestamp_ms
 
 
@@ -84,18 +87,32 @@ class ConversationsQMainWindow(QMainWindow):
 
 
 class ConversationsListQWidget(QWidget):
-    def __init__(self, title, recent_message, parent=None):
+    def __init__(self, ui, title, recent_message, timestamp_ms, parent=None):
         super(ConversationsListQWidget, self).__init__(parent)
 
         self.row = QVBoxLayout()
+        # self.row.maximumSize = ui.conversationsList.maximumSize()
 
-        title = truncate(title, 24)
-        recent_message = truncate(recent_message, 28)
+        title = truncate(title, 15)
+        recent_message = truncate(recent_message, 30)
+
+        heading_row = QHBoxLayout()
+        heading_row.maximumSize = ui.conversationsList.maximumSize()
 
         title_font = QFont("Sans Serif", 10)
         title_label = QLabel(title)
         title_label.setFont(title_font)
-        self.row.addWidget(title_label)
+        heading_row.addWidget(title_label)
+        heading_row.setStretchFactor(title_label, 1)
+
+        time_font = QFont("Sans Serif", 10)
+        time_string = timestamp_ms_to_timestring(timestamp_ms)
+        time_label = QLabel(time_string)
+        time_label.setFont(time_font)
+        heading_row.addWidget(time_label)
+        heading_row.setStretchFactor(time_label, 0)
+
+        self.row.addItem(heading_row)
 
         preview_font = QFont("Sans Serif", 9)
         preview_label = QLabel(recent_message)
@@ -122,6 +139,11 @@ def get_fb_dir():
         if (dirname[0:9] == "facebook-"):
             fb_dir = data_dir + "/" + dirname
     return fb_dir
+
+
+def timestamp_ms_to_timestring(timestamp_ms):
+    as_date = datetime.fromtimestamp(timestamp_ms / 1000.0)
+    return as_date.strftime("%d %b %y")
 
 
 def get_conversations_list(fb_dir):
@@ -163,10 +185,15 @@ def get_ordered_conversations_list(fb_dir):
 
 def populate_conversations_list(ui, conversations):
     for conversation in conversations:
-        widget = ConversationsListQWidget(conversation.title,
-                                          conversation.preview_message)
+        widget = ConversationsListQWidget(ui,
+                                          conversation.title,
+                                          conversation.preview_message,
+                                          conversation.timestamp_ms)
+
+        widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.MinimumExpanding)
 
         item = QListWidgetItem(ui.conversationsList)
+
         item.setSizeHint(widget.sizeHint())
 
         ui.conversationsList.addItem(item)
