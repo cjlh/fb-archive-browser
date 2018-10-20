@@ -16,14 +16,6 @@ import ui_mainwindow
 import ui_aboutdialog
 
 
-class ConversationPreview(object):
-    def __init__(self, title, preview_message, timestamp_ms):
-        self.title = title
-        # Fix FB message encoding for emojis and strip any whitespace
-        self.preview_message = parse_fb_message(preview_message)
-        self.timestamp_ms = timestamp_ms
-
-
 class Conversation(object):
     def __init__(self, participants, path, media_path, title,
                  is_still_participant, thread_type, timestamp_ms,
@@ -40,6 +32,23 @@ class Conversation(object):
             preview_message.encode('latin1').decode('utf-8').strip()
 
 
+class Message(object):
+    def __init__(self):
+        pass
+
+
+class TextMessage(Message):
+    def __init__(self):
+        super().__init__()
+        pass
+
+
+class PictureMessage(Message):
+    def __init__(self):
+        super().__init__()
+        pass
+
+
 class AboutQDialog(QDialog):
     def __init__(self):
         super(AboutQDialog, self).__init__()
@@ -49,7 +58,7 @@ class AboutQDialog(QDialog):
 
 class ConversationsQMainWindow(QMainWindow):
     def __init__(self, conversations):
-        super(ConversationsQMainWindow, self).__init__()
+        super().__init__()
 
         ui = ui_mainwindow.Ui_MainWindow()
         self.ui = ui
@@ -120,6 +129,7 @@ class ConversationsQMainWindow(QMainWindow):
     def load_conversation(self, conversation):
         with open(conversation.path + "/message.json") as f:
             messages_data = json.load(f)
+        print("Loading messages from \"{0}\".".format(conversation.path))
         self.ui.messagesList.clear()
         for message in messages_data["messages"]:
             message_content = parse_fb_message(message.get("content", ""))
@@ -128,7 +138,7 @@ class ConversationsQMainWindow(QMainWindow):
 
 class ConversationsListQWidget(QWidget):
     def __init__(self, ui, title, recent_message, timestamp_ms, parent=None):
-        super(ConversationsListQWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.row = QVBoxLayout()
         # self.row.maximumSize = ui.conversationsList.maximumSize()
@@ -219,10 +229,7 @@ def get_conversations_list(fb_dir):
         preview_message_dict = messages_data["messages"][0]
         preview_message = preview_message_dict.get("content", "(No messages)")
         timestamp_ms = preview_message_dict.get("timestamp_ms", "0")
-        """
-        conversations.append(ConversationPreview(title, preview_message,
-                                                 timestamp_ms))
-        """
+
         conversations.append(Conversation(participants, path, media_path,
                                           title, is_still_participant,
                                           thread_type, timestamp_ms,
@@ -246,7 +253,7 @@ if (__name__ == "__main__"):
         print("Facebook archive directory not found.")
         exit()
 
-    print("Facebook directory:", fb_dir)
+    print("Facebook directory: \"{0}\".".format(fb_dir))
 
     conversations = get_ordered_conversations_list(fb_dir)
     print("Loaded conversations list.")
