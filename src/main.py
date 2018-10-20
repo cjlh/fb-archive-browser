@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QWidget, \
     QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QListWidgetItem, \
     QStyleFactory, QSizePolicy
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QFont, QIcon
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, Qt
 
 import ui_mainwindow
 import ui_aboutdialog
@@ -19,15 +19,15 @@ import ui_aboutdialog
 class ConversationPreview(object):
     def __init__(self, title, preview_message, timestamp_ms):
         self.title = title
-        # Fix FB message encoding
-        self.preview_message = \
-            preview_message.encode('latin1').decode('utf-8').strip()
+        # Fix FB message encoding for emojis and strip any whitespace
+        self.preview_message = parse_fb_message(preview_message)
         self.timestamp_ms = timestamp_ms
 
 
 class Conversation(object):
     def __init__(self, participants, path, media_path, title,
-                 is_still_participant, thread_type, timestamp_ms):
+                 is_still_participant, thread_type, timestamp_ms,
+                 preview_message):
         self.participants = participants
         self.path = path
         self.media_path = media_path
@@ -35,6 +35,9 @@ class Conversation(object):
         self.is_still_participant = is_still_participant
         self.thread_type = thread_type
         self.timestamp_ms = timestamp_ms
+        # Fix FB message encoding for emojis and strip any whitespace
+        self.preview_message = \
+            preview_message.encode('latin1').decode('utf-8').strip()
 
 
 class AboutQDialog(QDialog):
@@ -49,6 +52,7 @@ class ConversationsQMainWindow(QMainWindow):
         super(ConversationsQMainWindow, self).__init__()
 
         ui = ui_mainwindow.Ui_MainWindow()
+        self.ui = ui
         ui.setupUi(self)
 
         # File menu
@@ -69,12 +73,16 @@ class ConversationsQMainWindow(QMainWindow):
         """
         ui.conversationsList.setStyleSheet(conversationsStyleSheet)
 
+        # Trigger when a conversation is selected
+        ui.conversationsList.itemSelectionChanged.connect(
+            self.selected_conversation)
+
         default_search_icon_path = \
             "./icons/search.svg"
         ui.actionSearch.setIcon(QIcon.fromTheme(
             "system-search", QIcon(default_search_icon_path)))
 
-        populate_conversations_list(ui, conversations)
+        self.populate_conversations_list(conversations)
 
     @pyqtSlot()
     def triggered_actionAbout(self):
@@ -84,6 +92,38 @@ class ConversationsQMainWindow(QMainWindow):
     @pyqtSlot()
     def triggered_actionExit(self):
         self.close()
+
+    @pyqtSlot()
+    def selected_conversation(self):
+        conversation = \
+            self.ui.conversationsList.currentItem().data(Qt.UserRole)
+        self.load_conversation(conversation)
+
+    def populate_conversations_list(self, conversations):
+        for conversation in conversations:
+            widget = ConversationsListQWidget(self.ui,
+                                              conversation.title,
+                                              conversation.preview_message,
+                                              conversation.timestamp_ms)
+
+            widget.setSizePolicy(QSizePolicy.Ignored,
+                                 QSizePolicy.MinimumExpanding)
+
+            item = QListWidgetItem(self.ui.conversationsList)
+
+            item.setData(Qt.UserRole, conversation)
+            item.setSizeHint(widget.sizeHint())
+
+            self.ui.conversationsList.addItem(item)
+            self.ui.conversationsList.setItemWidget(item, widget)
+
+    def load_conversation(self, conversation):
+        with open(conversation.path + "/message.json") as f:
+            messages_data = json.load(f)
+        self.ui.messagesList.clear()
+        for message in messages_data["messages"]:
+            message_content = parse_fb_message(message.get("content", ""))
+            self.ui.messagesList.addItem(message_content)
 
 
 class ConversationsListQWidget(QWidget):
@@ -132,6 +172,10 @@ def truncate(s, length):
         return s
 
 
+def parse_fb_message(message):
+    return message.encode('latin1').decode('utf-8').strip()
+
+
 def get_fb_dir():
     data_dir = "../data"
     fb_dir = None
@@ -163,15 +207,26 @@ def get_conversations_list(fb_dir):
         with open(path + "/message.json") as f:
             messages_data = json.load(f)
 
+        participants = [d["name"] for d in messages_data["participants"]]
+        media_path = messages_data.get("thread_path", "")
+
         # No title if conversation is with a deleted user
         title = messages_data.get("title", "Facebook User")
+
+        is_still_participant = messages_data["is_still_participant"]
+        thread_type = messages_data["thread_type"]
 
         preview_message_dict = messages_data["messages"][0]
         preview_message = preview_message_dict.get("content", "(No messages)")
         timestamp_ms = preview_message_dict.get("timestamp_ms", "0")
-
+        """
         conversations.append(ConversationPreview(title, preview_message,
                                                  timestamp_ms))
+        """
+        conversations.append(Conversation(participants, path, media_path,
+                                          title, is_still_participant,
+                                          thread_type, timestamp_ms,
+                                          preview_message))
     return conversations
 
 
@@ -181,23 +236,6 @@ def get_ordered_conversations_list(fb_dir):
                                    key=lambda k: k.timestamp_ms,
                                    reverse=True)
     return ordered_conversations
-
-
-def populate_conversations_list(ui, conversations):
-    for conversation in conversations:
-        widget = ConversationsListQWidget(ui,
-                                          conversation.title,
-                                          conversation.preview_message,
-                                          conversation.timestamp_ms)
-
-        widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.MinimumExpanding)
-
-        item = QListWidgetItem(ui.conversationsList)
-
-        item.setSizeHint(widget.sizeHint())
-
-        ui.conversationsList.addItem(item)
-        ui.conversationsList.setItemWidget(item, widget)
 
 
 if (__name__ == "__main__"):

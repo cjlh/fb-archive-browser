@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        self.messagesList = QtWidgets.QListView(self.centralwidget)
+        self.messagesList = QtWidgets.QListWidget(self.centralwidget)
         self.messagesList.setMinimumSize(QtCore.QSize(350, 0))
         self.messagesList.setObjectName("messagesList")
         self.gridLayout.addWidget(self.messagesList, 0, 1, 1, 1)
