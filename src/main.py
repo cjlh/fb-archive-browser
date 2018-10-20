@@ -16,20 +16,22 @@ import ui_aboutdialog
 
 
 class ConversationPreview(object):
-    def __init__(self, title, preview_message):
+    def __init__(self, title, preview_message, timestamp_ms):
         self.title = title
         self.preview_message = preview_message
+        self.timestamp_ms = timestamp_ms
 
 
 class Conversation(object):
     def __init__(self, participants, path, media_path, title,
-                 is_still_participant, thread_type):
+                 is_still_participant, thread_type, timestamp_ms):
         self.participants = participants
         self.path = path
         self.media_path = media_path
         self.title = title
         self.is_still_participant = is_still_participant
         self.thread_type = thread_type
+        self.timestamp_ms = timestamp_ms
 
 
 class AboutQDialog(QDialog):
@@ -144,9 +146,19 @@ def get_conversations_list(fb_dir):
 
         preview_message_dict = messages_data["messages"][0]
         preview_message = preview_message_dict.get("content", "(No messages)")
+        timestamp_ms = preview_message_dict.get("timestamp_ms", "0")
 
-        conversations.append(ConversationPreview(title, preview_message))
+        conversations.append(ConversationPreview(title, preview_message,
+                                                 timestamp_ms))
     return conversations
+
+
+def get_ordered_conversations_list(fb_dir):
+    conversations = get_conversations_list(fb_dir)
+    ordered_conversations = sorted(conversations,
+                                   key=lambda k: k.timestamp_ms,
+                                   reverse=True)
+    return ordered_conversations
 
 
 def populate_conversations_list(ui, conversations):
@@ -171,7 +183,7 @@ if (__name__ == "__main__"):
 
     print("Facebook directory:", fb_dir)
 
-    conversations = get_conversations_list(fb_dir)
+    conversations = get_ordered_conversations_list(fb_dir)
     print("Loaded conversations list.")
 
     window = ConversationsQMainWindow(conversations)
